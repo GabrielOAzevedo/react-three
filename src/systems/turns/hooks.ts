@@ -10,7 +10,6 @@ export function useTurnController(bList: Array<Battler>) {
   const calculateTurnOrder = () => {
     const list = Array.from(battlerList);
     const sortedList = list.sort((a, b) => b.currentInitiative - a.currentInitiative);
-    console.log(sortedList);
     setBattlerList(sortedList);
     getTurn(sortedList);
   };
