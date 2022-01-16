@@ -1,32 +1,28 @@
 import "./App.css";
-import { Canvas } from "@react-three/fiber";
-import Plane from "./components/plane";
-import { Suspense } from "react";
-import data from "./data/terrainmap.json";
+import Actor from "./systems/actors/actor";
+import Battler from "./systems/actors/battler";
+import TurnController from "./systems/turns/turn";
+
+const battlers = [
+  new Battler(0, new Actor(10)),
+  new Battler(0, new Actor(20)),
+  new Battler(0, new Actor(15)),
+  new Battler(0, new Actor(1)),
+];
 
 function App() {
-  const mapData = data.map.reverse();
-  console.log(mapData);
+  const turnController = TurnController(battlers);
   return (
     <div className="App">
-      <Canvas gl={{ antialias: false }}>
-        <Suspense fallback={null}>
-          <ambientLight />
-          {mapData.map((row, y) =>
-            row.map((item, x) => (
-              <Plane
-                tile={item}
-                key={`${y},${x}`}
-                position={[
-                  0.25 * (x - row.length / 2),
-                  0.25 * -(y - mapData.length / 2),
-                  0,
-                ]}
-              ></Plane>
-            ))
-          )}
-        </Suspense>
-      </Canvas>
+      <ol>
+        {turnController.battlerList.map((battler, index) => (
+          <li key={index}>
+            speed: {battler.actor.speed} - {battler.currentInitiative}
+          </li>
+        ))}
+      </ol>
+      <p>CurrentTurn: {turnController.currentTurn.actor.speed}</p>
+      <button onClick={turnController.endTurn}>Get Turn</button>
     </div>
   );
 }
